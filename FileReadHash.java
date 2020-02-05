@@ -43,7 +43,7 @@ File file = new File("sample_final.raw");
 
 //Use SHA-1 algorithm
 try {
-    MessageDigest shaDigest = MessageDigest.getInstance("SHA-1");
+    MessageDigest shaDigest = MessageDigest.getInstance("SHA-256");
     String shaChecksum = getFileChecksum(shaDigest, file);
 
     System.out.println(shaChecksum);
