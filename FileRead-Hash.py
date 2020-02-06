@@ -2,10 +2,10 @@
 import sys
 import hashlib
 	
-from zipfile import ZipFile
 
 
-filename = 'sample_final.raw'
+filename = sys.argv[1]
+print(filename)
 
 BLOCK_SIZE = 512
 
@@ -17,3 +17,4 @@ with open(filename, 'rb') as f:
         fb = f.read(BLOCK_SIZE)
     
 print(file_hash_obj.hexdigest())
+
