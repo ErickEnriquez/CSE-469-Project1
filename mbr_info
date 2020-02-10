@@ -51,7 +51,7 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     last8bytes = partition[doubleword:doubleword + doubleword]
     last8formatted = ''
     counter = 0
-    while(counter < 16):#format the last 8 bytes
+    while(counter < 16):
         last8formatted = last8formatted + last8bytes[counter:counter+2] + " "
         counter+=2
     #print(partition)
