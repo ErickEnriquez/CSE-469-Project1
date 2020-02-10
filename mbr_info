@@ -42,6 +42,7 @@ byte = 2
 word = 4 * 2
 doubleword = 8 * 2
 partitionlength = 16 * 2
+array = []
 
 dataString = binascii.hexlify(data) # make the data we have into a hex string
 
@@ -51,13 +52,15 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     last8bytes = partition[doubleword:doubleword + doubleword]
     last8formatted = ''
     counter = 0
-    while(counter < 16):
+    while(counter < 16):#format the last 8 bytes
         last8formatted = last8formatted + last8bytes[counter:counter+2] + " "
+        array.append(last8bytes[counter:counter+2])
         counter+=2
     #print(partition)
  #   print(paritiontype)
     partitionData = (paritiontype , partition , last8formatted)
-    print(partitionData)
+    #print(partitionData)
+    print(array)
     offset = offset + partitionlength
 
 
