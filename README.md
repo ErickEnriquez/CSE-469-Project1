@@ -7,12 +7,5 @@ ASU ID: 1208001804
 
 This is an exercise in being able to read in hex values from a master boot record, hashing and checking hashes, and determining types of partitions on a drive given raw data file  
 
-We need to figure out how we are going to actually open this file and read the values that it holds
+first we open the file, and hash the file with md5 and sha256, then we create the text files and write the hashes to them , next we take the 512 bytes and convert them to hex by using the binascii library and the .hexify function, which takes the 512 bytes and creates 1024 length string containing the master boot record and split it up into the boot loader , the partition data , and the signature, 
 
-traceback (most recent call last):
-  File "/home/erick/Documents/cse_469_homework1/FileRead-Hash.py", line 10, in <module>
-    with open(filename, 'rb') as f:
-IOError: [Errno 13] Permission denied: 'sample_final.raw'
-
-
-We also need to figure out how to read command line arguments and make a makefile that can create a python executable

@@ -7,4 +7,4 @@ run:
 	./mbr_info sample_final.raw
 
 clean:
-	rm mbr_info *.txt 
+	rm mbr_info *.txt
