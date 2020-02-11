@@ -55,12 +55,24 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     partition = dataString[offset: offset + partitionlength] #grab the 16 bytes of the partition
     paritiontype = partition[word:word+byte] # grab the partition type
     startingsectorle = partition[doubleword:doubleword + word]
+    sizeLittle = partition[doubleword + word : partitionlength]
+
+    sizeBig = bytearray.fromhex(sizeLittle)#convert the big endian to do math on the number
+    sizeBig.reverse()#reverse the array
+    sizeString = ''.join(format(x, '02x') for x in sizeBig)#format the string back and remove the byte array part
+    sizeNumber = int(sizeString,16)
+    sizeString = str(sizeNumber)
+
+
     startingsectorbe = bytearray.fromhex(startingsectorle)#convert the big endian to do math on the number
     startingsectorbe.reverse()#reverse the array
     s = ''.join(format(x, '02x') for x in startingsectorbe)#format the string back and remove the byte array part
     number = int(s,16)
     startingAddress =str(number)
-    print(startingAddress.zfill(10))
+    
+    output_data = paritiontype + " " + startingAddress.zfill(10) + " " + sizeString.zfill(10)
+    print(output_data)
+
     #print(paritiontype)
     last8bytes = partition[doubleword:doubleword + doubleword]
     counter = 0
