@@ -7,9 +7,11 @@ import csv      #for reading in the csv of the boot types
 
 
 def find_partition_type(byte):
-    print(byte)
-
-    return ("NTSF")
+    with open('PartitionTypes.csv') as CSVFile:
+        reader = csv.reader(CSVFile,delimiter=',')
+        for row in reader:
+            if row[0] == byte :
+                return row[1]
 
 
 def convert_little_to_big_endian(data):
@@ -75,8 +77,8 @@ i = 0
 while(offset < 1020 ) :# while we we haven't finished the parition
     partition = dataString[offset: offset + partitionlength] #grab the 16 bytes of the partition
     paritiontype = partition[word:word+byte] # grab the partition type
-    startingsectorle = partition[doubleword:doubleword + word]
-    sizeLittle = partition[doubleword + word : partitionlength]
+    startingsectorle = partition[doubleword:doubleword + word] # grab the 4 byte starting sector
+    sizeLittle = partition[doubleword + word : partitionlength] # grab the 4 byte sector count
 
     Address = convert_little_to_big_endian(startingsectorle)#convert the starting address to big endian
     Size =convert_little_to_big_endian(sizeLittle)# convert the size to big endian
