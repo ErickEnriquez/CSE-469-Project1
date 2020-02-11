@@ -3,7 +3,27 @@ import sys      # reading command line args
 import os       # splits strings 
 import hashlib  # hashing library
 import binascii # reading file in hex
-	
+import csv      #for reading in the csv of the boot types
+
+
+def find_partition_type(byte):
+    print(byte)
+
+    return ("NTSF")
+
+
+def convert_little_to_big_endian(data):
+    BigEndian = bytearray.fromhex(data)#convert the big endian to do math on the number
+    BigEndian.reverse()#reverse the array
+    BigEndian_String = ''.join(format(x, '02x') for x in BigEndian)#format the string back and remove the byte array part
+    return BigEndian_String
+
+def convert_hex_to_decimal_string(data):
+    number = int(data,16)
+    s = str(number)
+    return s.zfill(10)
+
+
 filename = sys.argv[1] #get the name of the file
 
 BLOCK_SIZE = 512 # size of the block we will be reading while hashing
@@ -42,6 +62,7 @@ byte = 2
 word = 4 * 2
 doubleword = 8 * 2
 partitionlength = 16 * 2
+
 # make a matrix by appending 4 lists to a matrix
 matrix = []
 for i in range(0,4):
@@ -57,20 +78,13 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     startingsectorle = partition[doubleword:doubleword + word]
     sizeLittle = partition[doubleword + word : partitionlength]
 
-    sizeBig = bytearray.fromhex(sizeLittle)#convert the big endian to do math on the number
-    sizeBig.reverse()#reverse the array
-    sizeString = ''.join(format(x, '02x') for x in sizeBig)#format the string back and remove the byte array part
-    sizeNumber = int(sizeString,16)
-    sizeString = str(sizeNumber)
+    Address = convert_little_to_big_endian(startingsectorle)
+    Size =convert_little_to_big_endian(sizeLittle)
 
-
-    startingsectorbe = bytearray.fromhex(startingsectorle)#convert the big endian to do math on the number
-    startingsectorbe.reverse()#reverse the array
-    s = ''.join(format(x, '02x') for x in startingsectorbe)#format the string back and remove the byte array part
-    number = int(s,16)
-    startingAddress =str(number)
+    StartingAddress = convert_hex_to_decimal_string(Address)
+    SizeString = convert_hex_to_decimal_string(Size)
     
-    output_data = paritiontype + " " + startingAddress.zfill(10) + " " + sizeString.zfill(10)
+    output_data = paritiontype + " " + find_partition_type(paritiontype) + " " + StartingAddress + " " + SizeString
     print(output_data)
 
     #print(paritiontype)
@@ -84,3 +98,4 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     offset = offset + partitionlength
     i+=1
 #print(matrix)
+
