@@ -25,7 +25,7 @@ def convert_hex_to_decimal_string(data):
     s = str(number)
     return s.zfill(10)
 
-def last_8_bytes(address , filename):
+def last_8_bytes(address , filename):#gets last 8 bytes of boot record given address
     data = 0
     with open(filename,"rb")as filehandler:
         filehandler.seek(address,0)#go to the address offset that we need
@@ -33,9 +33,11 @@ def last_8_bytes(address , filename):
         data=last8
     data = binascii.hexlify(data)
     data = data.upper()
-    output = data[0:2]
-    for i in range (3,17):#format the output to byte seperated string
-        output = output + " " +  data[i:i+2]
+    output = ''
+    i =0
+    while i < 16 :
+        output = output + " "  + data[i:i+2]
+        i+=2
 
     return output
 
@@ -72,6 +74,7 @@ with open(ShaFile,'w') as FileHandler:
 with open(Md5file,'w') as FileHandler:
     FileHandler.write(file_hash_MD5.hexdigest())
 
+#variables to help keep the byte sizes easier to read
 offset  = 446 * 2
 byte = 2 
 word = 4 * 2
@@ -103,21 +106,17 @@ while(offset < 1020 ) :# while we we haven't finished the parition
 
     if paritiontype != '00' :    #don't print our the empty partition
         output_data = paritiontype + " " + find_partition_type(paritiontype) + " " + StartingAddress + " " + SizeString
-        print(output_data)
+        print(output_data)#print the data 
 
-    offset = offset + partitionlength
+    offset = offset + partitionlength # move 16 bytes to next partition
 
 masterbootRecord_info = (partition_address,partition_size,partition_type)#strore the info as a tuple
-
-for i in range(1,5):
-    if masterbootRecord_info[2][i-1] != '00':   #if the partition number
-        output = "Partition Number " + str(i)
-
-        #calculate the address of the last 8 bytes and print it after the output
-        addr = 0 #change the to what we need
-        print(output)
-        print(last_8_bytes(addr,filename))
-
+for i in range(0,5):
+    if masterbootRecord_info[2][i-1] != '00':   #if the partition number is empty
+        print("Partition Number " + str(i))
+        addr =  (masterbootRecord_info[0][i-1] *512) + 504 #size *address      
+        print("Last 8 bytes of boot record:"+str(last_8_bytes(addr,filename)))
+       
 
 
 
