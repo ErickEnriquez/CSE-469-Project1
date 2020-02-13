@@ -86,8 +86,9 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     StartingAddress = convert_hex_to_decimal_string(Address) #convert this to decimal string
     SizeString = convert_hex_to_decimal_string(Size)        #conver this to decimal Strinf
     
-    output_data = paritiontype + " " + find_partition_type(paritiontype) + " " + StartingAddress + " " + SizeString
-    print(output_data)
+    if paritiontype != '00':    #don't print our the empty partition
+        output_data = paritiontype + " " + find_partition_type(paritiontype) + " " + StartingAddress + " " + SizeString
+        print(output_data)
 
     #print(paritiontype)
     last8bytes = partition[doubleword:doubleword + doubleword]
