@@ -32,7 +32,12 @@ def last_8_bytes(address , filename):
         last8 = filehandler.read(8)#read the last 8 bytes
         data=last8
     data = binascii.hexlify(data)
-    return data
+    data = data.upper()
+    output = data[0:2]
+    for i in range (3,17):#format the output to byte seperated string
+        output = output + " " +  data[i:i+2]
+
+    return output
 
 filename = sys.argv[1] #get the name of the file
 
@@ -75,6 +80,10 @@ partitionlength = 16 * 2
 
 dataString = binascii.hexlify(data) # make the data we have into a hex string
 
+partitionNumber = 1
+partition_address = []
+partition_size = []
+partition_type = []
 
 while(offset < 1020 ) :# while we we haven't finished the parition
     partition = dataString[offset: offset + partitionlength] #grab the 16 bytes of the partition
@@ -86,14 +95,29 @@ while(offset < 1020 ) :# while we we haven't finished the parition
     Size =convert_little_to_big_endian(sizeLittle)# convert the size to big endian
 
     StartingAddress = convert_hex_to_decimal_string(Address) #convert this to decimal string
-    SizeString = convert_hex_to_decimal_string(Size)        #conver this to decimal Strinf
-    
+    SizeString = convert_hex_to_decimal_string(Size)        #convert this to decimal String
+
+    partition_address.append(int(StartingAddress,10))#store the starting address
+    partition_size.append(int(SizeString,10))#store the size of the partition
+    partition_type.append(paritiontype)
+
     if paritiontype != '00' :    #don't print our the empty partition
         output_data = paritiontype + " " + find_partition_type(paritiontype) + " " + StartingAddress + " " + SizeString
         print(output_data)
-        print(last_8_bytes(10,filename))
 
     offset = offset + partitionlength
+
+masterbootRecord_info = (partition_address,partition_size,partition_type)#strore the info as a tuple
+
+for i in range(1,5):
+    if masterbootRecord_info[2][i-1] != '00':   #if the partition number
+        output = "Partition Number " + str(i)
+
+        #calculate the address of the last 8 bytes and print it after the output
+        addr = 0 #change the to what we need
+        print(output)
+        print(last_8_bytes(addr,filename))
+
 
 
 
