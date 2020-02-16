@@ -6,6 +6,7 @@ import binascii # reading file in hex
 import csv      #for reading in the csv of the boot types
 
 
+#checks the parition type byte by looking at the Partition Types.csv doc
 def find_partition_type(byte):
     with open('PartitionTypes.csv') as CSVFile:
         reader = csv.reader(CSVFile,delimiter = ',')
@@ -14,18 +15,20 @@ def find_partition_type(byte):
                 return row[1]   #return the name of the parition
 
 
+#takes a little endian string of values. and returns the big endian string representation
 def convert_little_to_big_endian(data):
     BigEndian = bytearray.fromhex(data)#convert the big endian to do math on the number
     BigEndian.reverse()#reverse the array
     BigEndian_String = ''.join(format(x, '02x') for x in BigEndian)#format the string back and remove the byte array part
     return BigEndian_String
 
+#takes a hex string and converts it into a decimal number with 10 digits and adds padding if needed
 def convert_hex_to_decimal_string(data):
     number = int(data,16)
     s = str(number)
     return s.zfill(10)
 
-def last_8_bytes(address , filename):#gets last 8 bytes of boot record given address
+def last_8_bytes(address , filename):#gets last 8 bytes of boot record given address and the filename
     data = 0
     with open(filename,"rb")as filehandler:
         filehandler.seek(address,0)#go to the address offset that we need
@@ -45,11 +48,12 @@ filename = sys.argv[1] #get the name of the file
 
 BLOCK_SIZE = 512 # size of the block we will be reading while hashing
 
-Md5file = "MD5" + filename
-ShaFile  = "SHA1" +filename
+Md5file = "MD5-" + filename
+ShaFile  = "SHA1-" +filename
 
-Md5file = os.path.splitext(Md5file)[0]# remove the .raw extension
-ShaFile = os.path.splitext(ShaFile)[0]# remove .raw extension
+#don't need to remove the extension just can add .txt extenstion at the end
+#Md5file = os.path.splitext(Md5file)[0]# remove the .raw extension
+#ShaFile = os.path.splitext(ShaFile)[0]# remove .raw extension
 
 Md5file = Md5file + '.txt'
 ShaFile = ShaFile + '.txt'
